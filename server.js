@@ -1,10 +1,16 @@
+
+
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+const dotenv =require("dotenv");
+const connectDatabase = require('./database');
 
-app.get('/ping', (req,res) => {
+app.get('/ping', (req, res) => {
     res.send('Pong!');
 });
+
+connectDatabase();
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
