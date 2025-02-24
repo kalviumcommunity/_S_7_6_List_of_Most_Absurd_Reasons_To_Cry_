@@ -1,4 +1,4 @@
-const User = require('../models/postschema'); // Import User Schema
+const User = require('./postschema'); // Import User Schema
 
 // ✅ Create a new user
 exports.createUsers = async (req, res) => {
