@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "This app is designed to allow users to share and interact with the funniest or most absurd reasons they've cried.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+},
+
   "author": "Akarshana",
   "license": "ISC",
   "keywords": [],
