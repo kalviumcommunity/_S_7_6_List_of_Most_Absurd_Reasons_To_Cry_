@@ -1,5 +1,5 @@
 import React from 'react';
-import './Story.css';  // Importing the CSS file
+import './Story.css';  
 
 
 const Story =({ story }) => {

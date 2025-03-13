@@ -55,3 +55,5 @@ Users can share their favorite reasons to cry on social media platforms like Fac
 This feature encourages virality and helps attract new users to the platform by sharing funny and absurd content.
 
 ## https://s-7-6-list-of-most-absurd-reasons-to-cry.onrender.com/ping
+
+ ## cloudflare: https://listofasburdreasonstocry.pages.dev/

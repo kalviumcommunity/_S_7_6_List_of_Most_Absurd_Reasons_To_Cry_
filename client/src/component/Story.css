@@ -1,5 +1,5 @@
 .story {
-  background-color: #333; /* Dark background for the story card */
+  background-color: #333; 
   color: white; 
   padding: 20px;
   margin: 15px 0;
@@ -17,7 +17,7 @@
 }
 
 
-.story p {
+.story content {
   font-size: 1rem;
   margin-bottom: 15px;
   color: #ddd; 
