@@ -1,8 +1,7 @@
 import React from 'react';
-
-
 import DummyStory from './pages/DummyStory';
 import LandingPage from './pages/LandingPage';
+import AddEntityForm from './pages/AddEntityForm';  
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -11,6 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/story" element={<DummyStory />} />
+        <Route path="/add-entity" element={<AddEntityForm />} /> 
       </Routes>
     </BrowserRouter>
   );
