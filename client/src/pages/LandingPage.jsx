@@ -1,27 +1,50 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Story from './component/Story'; 
+
+const Story = ({ story, onDelete }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="story p-4 border rounded-lg shadow">
+      <h2 className="text-xl font-bold">{story.title}</h2>
+      <p className="text-gray-600">{story.content}</p>
+      <p className="text-sm text-gray-400"><strong>Submitted by:</strong> {story.author}</p>
+      <div className="flex items-center mt-2 space-x-4">
+        <button
+          onClick={() => navigate(`/update-story/${story._id}`)}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          ✏️ Edit
+        </button>
+        <button
+          onClick={() => onDelete(story._id)}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          🗑️ Delete
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const LandingPage = () => {
   const [stories, setStories] = useState([]);
   const [newStory, setNewStory] = useState({ title: '', content: '', author: '' });
   const [errorMessage, setErrorMessage] = useState('');
 
- 
   useEffect(() => {
     const fetchStories = async () => {
       try {
         const response = await axios.get('http://localhost:3000/api/stories');
-        setStories(response.data); 
+        setStories(response.data);
       } catch (error) {
         console.error('Error fetching stories:', error);
       }
     };
-
     fetchStories();
   }, []);
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newStory.title || !newStory.content || !newStory.author) {
@@ -31,12 +54,21 @@ const LandingPage = () => {
 
     try {
       const response = await axios.post('http://localhost:3000/api/stories', newStory);
-      setStories([...stories, response.data]); // Add the new story to the list of stories
-      setNewStory({ title: '', content: '', author: '' }); // Reset form
+      setStories([...stories, response.data]);
+      setNewStory({ title: '', content: '', author: '' });
       setErrorMessage('');
     } catch (error) {
       console.error('Error adding story:', error);
       setErrorMessage('There was an error adding your story. Please try again.');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/stories/${id}`);
+      setStories(stories.filter(story => story._id !== id));
+    } catch (error) {
+      console.error('Error deleting story:', error);
     }
   };
 
@@ -53,13 +85,10 @@ const LandingPage = () => {
         </a>
       </header>
 
-     
       <section className="py-16 px-4 bg-white">
         <h2 className="text-3xl font-bold text-center mb-8">Add Your Story</h2>
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-4">
-          {errorMessage && (
-            <p className="text-red-500 text-center">{errorMessage}</p>
-          )}
+          {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
           <input
             type="text"
             name="title"
@@ -95,13 +124,12 @@ const LandingPage = () => {
         </form>
       </section>
 
-  
       <section className="py-16 px-4 bg-white">
         <h2 className="text-3xl font-bold text-center mb-8">Popular Reasons to Cry</h2>
         <div className="max-w-4xl mx-auto space-y-6">
           {stories.length > 0 ? (
             stories.map((story) => (
-              <Story key={story._id} story={story} />
+              <Story key={story._id} story={story} onDelete={handleDelete} />
             ))
           ) : (
             <p>No stories available</p>
