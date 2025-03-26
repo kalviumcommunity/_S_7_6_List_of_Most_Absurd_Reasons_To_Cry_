@@ -1,13 +1,11 @@
-
 const express = require('express');
-const { updateStoryVotes } = require('./database'); 
-const Entity = require('./models/Entity');
+const Story = require('./models/Story'); 
 const router = express.Router();
 
 
 router.get('/stories', async (req, res) => {
   try {
-    const stories = await Story.find(); 
+    const stories = await Story.find();
     res.json(stories);
   } catch (err) {
     res.status(500).json({ message: 'Error retrieving stories' });
@@ -15,39 +13,50 @@ router.get('/stories', async (req, res) => {
 });
 
 
+router.post('/stories', async (req, res) => {
+  const { title, content, author } = req.body;
+  try {
+    const newStory = new Story({ title, content, author });
+    await newStory.save();
+    res.status(201).json(newStory);
+  } catch (err) {
+    res.status(500).json({ message: 'Error creating story' });
+  }
+});
+
+// Update a story
 router.put('/stories/:id', async (req, res) => {
   const { id } = req.params;
-  const { votes } = req.body;
-
-  const updatedStory = await updateStoryVotes(id, votes);
-  if (updatedStory) {
-    res.json(updatedStory);
-  } else {
-    res.status(404).json({ message: 'Story not found' });
-  }
-});
-
-
-router.post('/entities', async (req, res) => {
   const { title, content, author } = req.body;
-  const newEntity = new Entity({ title, content, author });
 
   try {
-    await newEntity.save();
-    res.status(201).json(newEntity);
+    const updatedStory = await Story.findByIdAndUpdate(
+      id,
+      { title, content, author },
+      { new: true }
+    );
+    if (!updatedStory) {
+      return res.status(404).json({ message: 'Story not found' });
+    }
+    res.json(updatedStory);
   } catch (err) {
-    res.status(500).json({ message: 'Error creating entity' });
+    res.status(500).json({ message: 'Error updating story' });
   }
 });
 
+// Delete a story
+router.delete('/stories/:id', async (req, res) => {
+  const { id } = req.params;
 
-router.get('/entities', async (req, res) => {
   try {
-    const entities = await Entity.find();
-    res.json(entities);
+    const deletedStory = await Story.findByIdAndDelete(id);
+    if (!deletedStory) {
+      return res.status(404).json({ message: 'Story not found' });
+    }
+    res.json({ message: 'Story deleted successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Error retrieving entities' });
+    res.status(500).json({ message: 'Error deleting story' });
   }
 });
 
-module.exports = router;  
+module.exports = router;
