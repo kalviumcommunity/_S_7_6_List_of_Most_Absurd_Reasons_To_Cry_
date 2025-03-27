@@ -1,8 +1,17 @@
 const express = require('express');
-const Story = require('./models/Story'); 
+const { body, validationResult } = require('express-validator');
+const Story = require('./models/Story');
+
 const router = express.Router();
 
+// Validation middleware
+const validateStory = [
+  body('title').notEmpty().withMessage('Title is required'),
+  body('content').notEmpty().withMessage('Content is required'),
+  body('author').notEmpty().withMessage('Author is required'),
+];
 
+// Get all stories
 router.get('/stories', async (req, res) => {
   try {
     const stories = await Story.find();
@@ -12,8 +21,13 @@ router.get('/stories', async (req, res) => {
   }
 });
 
+// Create a new story with validation
+router.post('/stories', validateStory, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-router.post('/stories', async (req, res) => {
   const { title, content, author } = req.body;
   try {
     const newStory = new Story({ title, content, author });
@@ -24,8 +38,13 @@ router.post('/stories', async (req, res) => {
   }
 });
 
-// Update a story
-router.put('/stories/:id', async (req, res) => {
+// Update a story with validation
+router.put('/stories/:id', validateStory, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { id } = req.params;
   const { title, content, author } = req.body;
 

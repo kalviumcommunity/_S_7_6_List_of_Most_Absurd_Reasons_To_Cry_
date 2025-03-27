@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const Story = ({ story, onDelete }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="story p-4 border rounded-lg shadow">
-      <h2 className="text-xl font-bold">{story.title}</h2>
-      <p className="text-gray-600">{story.content}</p>
-      <p className="text-sm text-gray-400"><strong>Submitted by:</strong> {story.author}</p>
-      <div className="flex items-center mt-2 space-x-4">
+    <div className="story p-6 bg-white shadow-lg rounded-lg border border-gray-200 transform hover:scale-105 transition duration-300">
+      <h2 className="text-2xl font-semibold text-gray-800">{story.title}</h2>
+      <p className="text-gray-600 mt-2">{story.content}</p>
+      <p className="text-sm text-gray-500 mt-2">Submitted by: <strong>{story.author}</strong></p>
+      <div className="flex items-center mt-4 space-x-4">
         <button
           onClick={() => navigate(`/update-story/${story._id}`)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-purple-400 text-white px-4 py-2 rounded-md hover:bg-purple-500 transition"
         >
           ✏️ Edit
         </button>
         <button
           onClick={() => onDelete(story._id)}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
         >
           🗑️ Delete
         </button>
@@ -63,31 +63,16 @@ const LandingPage = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/api/stories/${id}`);
-      setStories(stories.filter(story => story._id !== id));
-    } catch (error) {
-      console.error('Error deleting story:', error);
-    }
-  };
-
   return (
-    <div className="App bg-white text-black">
-      <header className="bg-black text-center py-20">
-        <h1 className="text-4xl text-white font-extrabold">The Most Absurd Reasons You Have Ever Cried</h1>
-        <p className="text-xl text-white mt-4">Join the community and share your funniest, most absurd crying stories.</p>
-        <a
-          href="/register"
-          className="mt-6 inline-block bg-purple-200 text-black px-6 py-3 rounded-lg text-lg font-semibold hover:bg-purple-300 transition duration-300"
-        >
-          Get Started
-        </a>
+    <div className="min-h-screen w-full bg-gradient-to-b from-black via-gray-900 to-purple-700 text-gray-100 flex flex-col items-center">
+      <header className="w-full max-w-7xl bg-white shadow-md rounded-lg text-center py-16 px-8">
+        <h1 className="text-5xl font-extrabold text-gray-800">The Most Absurd Reasons You Have Ever Cried</h1>
+        <p className="text-xl mt-4 text-gray-600">Join the community and share your funniest, most absurd crying stories.</p>
       </header>
 
-      <section className="py-16 px-4 bg-white">
-        <h2 className="text-3xl font-bold text-center mb-8">Add Your Story</h2>
-        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-4">
+      <section className="w-full max-w-5xl py-16 px-6">
+        <h2 className="text-3xl font-bold text-center mb-8 text-purple-300">Add Your Story</h2>
+        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md space-y-4">
           {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
           <input
             type="text"
@@ -95,7 +80,7 @@ const LandingPage = () => {
             value={newStory.title}
             onChange={(e) => setNewStory({ ...newStory, title: e.target.value })}
             placeholder="Story Title"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
             required
           />
           <textarea
@@ -103,7 +88,7 @@ const LandingPage = () => {
             value={newStory.content}
             onChange={(e) => setNewStory({ ...newStory, content: e.target.value })}
             placeholder="Story Content"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
             required
           />
           <input
@@ -112,41 +97,39 @@ const LandingPage = () => {
             value={newStory.author}
             onChange={(e) => setNewStory({ ...newStory, author: e.target.value })}
             placeholder="Author Name"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
             required
           />
           <button
             type="submit"
-            className="w-full bg-purple-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-purple-600 transition duration-300"
+            className="w-full bg-purple-400 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-purple-500 transition"
           >
             Submit Story
           </button>
         </form>
       </section>
 
-      <section className="py-16 px-4 bg-white">
-        <h2 className="text-3xl font-bold text-center mb-8">Popular Reasons to Cry</h2>
-        <div className="max-w-4xl mx-auto space-y-6">
+      <section className="w-full max-w-5xl py-16 px-6">
+        <h2 className="text-3xl font-bold text-center mb-8 text-purple-300">Popular Reasons to Cry</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {stories.length > 0 ? (
             stories.map((story) => (
-              <Story key={story._id} story={story} onDelete={handleDelete} />
+              <Story key={story._id} story={story} onDelete={() => {}} />
             ))
           ) : (
-            <p>No stories available</p>
+            <p className="text-center text-gray-300">No stories available</p>
           )}
         </div>
       </section>
 
-      <footer className="bg-black text-white py-8">
+      <footer className="w-full bg-gray-900 text-white py-8 mt-8">
         <div className="text-center">
-          <a href="/register" className="mx-4">Register</a>
-          <a href="/login" className="mx-4">Login</a>
-          <a href="/privacy-policy" className="mx-4">Privacy Policy</a>
+          <Link to="/privacy-policy" className="mx-4 hover:underline">Privacy Policy</Link>
         </div>
-        <div className="mt-4 text-center">
-          <a href="#" className="mx-4">Facebook</a>
-          <a href="#" className="mx-4">Instagram</a>
-          <a href="#" className="mx-4">Twitter</a>
+        <div className="mt-4 text-center space-x-4">
+          <a href="#" className="hover:underline">Facebook</a>
+          <a href="#" className="hover:underline">Instagram</a>
+          <a href="#" className="hover:underline">Twitter</a>
         </div>
       </footer>
     </div>
